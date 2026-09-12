@@ -1,0 +1,31 @@
+cff-version: 1.2.0
+message: "Si usa este software, por favor cítelo como se indica."
+title: "Éngista TOPSIS"
+abstract: "Aplicación web académica autocontenida para la toma de decisiones multicriterio con el método TOPSIS."
+type: software
+version: "1.0"
+date-released: "2026-09-12"
+authors:
+  - family-names: "Gómez Rueda"
+    given-names: "Mario Sergio"
+    email: "mgomezr1@gmail.com"
+url: "https://mgomezr1.github.io/engista-topsis/"
+license: "LicenseRef-Academico"
+keywords:
+  - TOPSIS
+  - decisión multicriterio
+  - MCDM
+  - entropía de Shannon
+  - docencia
+references:
+  - type: book
+    authors:
+      - family-names: "Hwang"
+        given-names: "Ching-Lai"
+      - family-names: "Yoon"
+        given-names: "Kwangsun"
+    title: "Multiple Attribute Decision Making: Methods and Applications"
+    year: 1981
+    publisher:
+      name: "Springer-Verlag"
+    doi: "10.1007/978-3-642-48318-9"
