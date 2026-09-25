@@ -2,7 +2,7 @@
 
 Aplicación web académica para tomar decisiones con el método **TOPSIS** (Technique for Order of Preference by Similarity to Ideal Solution) de Hwang y Yoon: escriba el desempeño real de cada alternativa, pondere los criterios y obtenga el ranking por cercanía a la solución ideal.
 
-**Abrir la aplicación:** https://mgomezr1.github.io/engista-topsis/
+**Abrir la aplicación:** https://mgomezr1.github.io/engista-TOPSIS/
 
 No requiere instalación ni registro. Funciona en cualquier navegador moderno, en computador, tableta o teléfono.
 
