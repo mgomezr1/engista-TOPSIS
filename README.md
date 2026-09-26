@@ -42,7 +42,7 @@ La guía completa (método, fórmulas, funciones, exportaciones y limitaciones) 
 
 ## Cómo citar
 
-Gómez Rueda, M. S. (2026). *Éngista TOPSIS* (Versión 1.0) [Software]. https://mgomezr1.github.io/engista-topsis/
+Gómez Rueda, M. S. (2026). *Éngista TOPSIS* (Versión 1.0) [Software]. https://mgomezr1.github.io/engista-TOPSIS/
 
 ## Autoría y uso
 
