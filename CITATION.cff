@@ -3,7 +3,7 @@ message: "Si usa este software, por favor cítelo como se indica."
 title: "Éngista TOPSIS"
 abstract: "Aplicación web académica autocontenida para la toma de decisiones multicriterio con el método TOPSIS."
 type: software
-version: "2.0"
+version: "1.0"
 date-released: "2026-09-12"
 authors:
   - family-names: "Gómez Rueda"

@@ -330,11 +330,33 @@ tbody tr:hover { background: var(--velo-fuerte); }
 
 /* Matriz de decisión editable */
 .matriz-decision input { min-width: 5.5rem; text-align: right; }
-.matriz-decision th.criterio-beneficio { color: var(--esmeralda); }
-.matriz-decision th.criterio-costo { color: var(--coral); }
-.tipo-etiqueta { display: block; font-size: 0.72rem; font-weight: 600; margin-top: 0.2rem; }
-.tipo-etiqueta--beneficio { color: var(--esmeralda); }
-.tipo-etiqueta--costo { color: var(--coral); }
+.matriz-decision th .crit-cab { display: flex; flex-direction: column; gap: 0.15rem; align-items: flex-end; }
+.matriz-decision th .crit-nombre { font-weight: 650; color: var(--texto); }
+.matriz-decision th .crit-meta { font-size: 0.7rem; font-weight: 600; }
+.matriz-decision th .crit-sentido-max { color: var(--esmeralda); }
+.matriz-decision th .crit-sentido-min { color: var(--coral); }
+
+/* Tabla de criterios: nombre, sentido (maximizar/minimizar) y peso, todo junto */
+.tabla-criterios { width: 100%; border-collapse: separate; border-spacing: 0 8px; }
+.tabla-criterios td { padding: 0.35rem 0.6rem; vertical-align: middle; background: var(--relieve); }
+.tabla-criterios tr td:first-child { border-radius: var(--r-control) 0 0 var(--r-control); padding-left: 0.9rem; }
+.tabla-criterios tr td:last-child { border-radius: 0 var(--r-control) var(--r-control) 0; }
+.tabla-criterios .cc-nombre input { min-width: 170px; text-align: left; }
+.tabla-criterios .cc-peso { text-align: center; }
+.tabla-criterios .cc-peso input { max-width: 120px; text-align: center; }
+.tabla-criterios .cc-etq { font-size: 0.74rem; color: var(--texto-3); margin-top: 0.2rem; text-align: center; }
+
+/* Interruptor de sentido: maximizar (esmeralda) / minimizar (coral) */
+.sentido-toggle { display: inline-flex; background: var(--relieve-alto); border-radius: 999px; padding: 3px; }
+.sentido-toggle button {
+  border: 0; background: transparent; color: var(--texto-2); cursor: pointer;
+  padding: 0.35rem 0.85rem; border-radius: 999px; font: inherit; font-size: 0.82rem;
+  transition: background-color var(--t-rapida) var(--curva), color var(--t-rapida) var(--curva);
+}
+.sentido-toggle button:hover { color: var(--texto); }
+.sentido-toggle button.activo-max { background: var(--esmeralda); color: var(--abismo); font-weight: 650; }
+.sentido-toggle button.activo-min { background: var(--coral); color: var(--abismo); font-weight: 650; }
+.aviso-pesos { margin: 0.6rem 0 0; font-size: 0.85rem; }
 
 /* Ganadora destacada */
 .ganadora {
@@ -476,10 +498,9 @@ details.desplegable > div { padding: 0 1.2rem 1.1rem; }
   <ol class="riel__pasos">
     <li><a href="#seccionConfiguracion" data-paso="configuracion"><span class="riel__num">1</span><span>Configuración</span><span class="riel__estado" aria-hidden="true"></span></a></li>
     <li><a href="#seccionDecision" data-paso="decision"><span class="riel__num">2</span><span>Matriz de decisión</span><span class="riel__estado" aria-hidden="true"></span></a></li>
-    <li><a href="#seccionPesos" data-paso="pesos"><span class="riel__num">3</span><span>Pesos</span><span class="riel__estado" aria-hidden="true"></span></a></li>
-    <li><a href="#seccionResultados" data-paso="resultados"><span class="riel__num">4</span><span>Resultados</span><span class="riel__estado" aria-hidden="true"></span></a></li>
-    <li><a href="#seccionSensibilidad" data-paso="sensibilidad"><span class="riel__num">5</span><span>Sensibilidad</span><span class="riel__estado" aria-hidden="true"></span></a></li>
-    <li><a href="#seccionExportacion" data-paso="exportacion"><span class="riel__num">6</span><span>Exportación</span><span class="riel__estado" aria-hidden="true"></span></a></li>
+    <li><a href="#seccionResultados" data-paso="resultados"><span class="riel__num">3</span><span>Resultados</span><span class="riel__estado" aria-hidden="true"></span></a></li>
+    <li><a href="#seccionSensibilidad" data-paso="sensibilidad"><span class="riel__num">4</span><span>Sensibilidad</span><span class="riel__estado" aria-hidden="true"></span></a></li>
+    <li><a href="#seccionExportacion" data-paso="exportacion"><span class="riel__num">5</span><span>Exportación</span><span class="riel__estado" aria-hidden="true"></span></a></li>
     <li class="riel__aux"><a href="#seccionPruebas" data-paso="pruebas"><span class="riel__num"></span><span>Modo de prueba</span><span class="riel__estado" aria-hidden="true"></span></a></li>
   </ol>
   <p class="riel__nota">Desarrollado por <span data-app="autor">Mario Sergio Gómez Rueda</span>. Uso de carácter académico; cualquier otro uso se regirá por el derecho de la propiedad intelectual. Sugerencias o dudas: <a data-app="correo" href="mailto:mgomezr1@gmail.com">mgomezr1@gmail.com</a></p>
@@ -532,7 +553,7 @@ details.desplegable > div { padding: 0 1.2rem 1.1rem; }
 
   <ol class="metodo__pasos" style="margin-left:var(--sangria)">
     <li><span class="metodo__num">1</span><h3>Matriz de decisión</h3><p>Escriba el desempeño de cada alternativa en cada criterio con valores reales: precio, tiempo, puntaje, capacidad. Marque cada criterio como de beneficio (más es mejor) o de costo (menos es mejor).</p></li>
-    <li><span class="metodo__num">2</span><h3>Normalización y pesos</h3><p>Los criterios se llevan a una escala común para poder compararlos, y se pondera cada uno según su importancia. Los pesos pueden ser suyos o calcularse con la entropía de los datos.</p></li>
+    <li><span class="metodo__num">2</span><h3>Normalización y pesos</h3><p>Los criterios se llevan a una escala común para poder compararlos, y se pondera cada uno según su importancia con los pesos que usted asigna (deben sumar 1).</p></li>
     <li><span class="metodo__num">3</span><h3>Soluciones ideales</h3><p>Con la matriz ya normalizada y ponderada, se identifica el mejor valor posible de cada criterio (la solución ideal A+) y el peor (la anti ideal A−).</p></li>
     <li><span class="metodo__num">4</span><h3>Cercanía y ranking</h3><p>Se mide la distancia de cada alternativa a A+ y a A−, y se calcula el coeficiente de cercanía Ci entre 0 y 1. La alternativa con mayor Ci encabeza el ranking.</p></li>
   </ol>
@@ -586,13 +607,13 @@ details.desplegable > div { padding: 0 1.2rem 1.1rem; }
       <div class="rejilla">
         <div class="campo">
           <label for="numeroAlternativas">Número de alternativas</label>
-          <input type="number" id="numeroAlternativas" min="2" max="30" step="1" placeholder="3">
+          <input type="number" id="numeroAlternativas" min="2" max="30" step="1" value="3">
           <span class="ayuda">Las opciones entre las que decide (mínimo 2).</span>
           <span class="campo__error" data-error="numeroAlternativas"></span>
         </div>
         <div class="campo">
           <label for="numeroCriterios">Número de criterios</label>
-          <input type="number" id="numeroCriterios" min="2" max="20" step="1" placeholder="4">
+          <input type="number" id="numeroCriterios" min="2" max="20" step="1" value="4">
           <span class="ayuda">Los aspectos que evalúa (mínimo 2).</span>
           <span class="campo__error" data-error="numeroCriterios"></span>
         </div>
@@ -606,32 +627,21 @@ details.desplegable > div { padding: 0 1.2rem 1.1rem; }
         </div>
       </div>
       <div class="acciones">
-        <button type="submit" class="boton" id="generarConfiguracion">Generar campos</button>
-        <button type="button" class="boton boton--secundario" id="limpiarFormulario">Limpiar formulario</button>
+        <button type="submit" class="boton" id="confirmarConfiguracion">Confirmar y construir la matriz</button>
       </div>
     </form>
-
-    <div id="camposNombres" hidden>
-      <p class="panel__sub">Nombres de las alternativas y los criterios</p>
-      <p class="ayuda">En cada criterio elija si es de beneficio (más es mejor, como calidad) o de costo (menos es mejor, como precio).</p>
-      <div class="rejilla" id="nombresAlternativas"></div>
-      <div id="nombresCriterios" style="margin-top:1.2rem"></div>
-      <div class="acciones">
-        <button type="button" class="boton" id="confirmarConfiguracion">Confirmar configuración</button>
-      </div>
-    </div>
   </div>
 </section>
 
 <!-- =====================================================================
-     PASO 2: MATRIZ DE DECISIÓN
+     PASO 2: MATRIZ DE DECISIÓN (criterios, sentido, peso y desempeño)
      ===================================================================== -->
 <section class="seccion" id="seccionDecision">
   <div class="seccion__cabeza">
     <span class="seccion__num" aria-hidden="true">2</span>
     <div>
       <h2 class="seccion__titulo">Matriz de decisión</h2>
-      <p class="seccion__texto">Escriba el desempeño real de cada alternativa en cada criterio. Puede usar decimales con coma o punto. Se permiten valores negativos, con un aviso si la normalización vectorial no es apropiada.</p>
+      <p class="seccion__texto">Nombre cada criterio, indique si se maximiza o minimiza, asigne su peso y escriba el desempeño de cada alternativa. Los pesos deben sumar 1 (equivalente a 100 %).</p>
     </div>
   </div>
 
@@ -640,50 +650,20 @@ details.desplegable > div { padding: 0 1.2rem 1.1rem; }
       <p class="ayuda">Confirme primero la configuración del paso 1 para construir la matriz.</p>
     </div>
     <div id="contenedorMatrizDecision" hidden>
+      <p class="panel__sub">Criterios: nombre, sentido y peso</p>
+      <div class="tabla-contenedor">
+        <table class="tabla-criterios" id="tablaCriterios"><tbody></tbody></table>
+      </div>
+      <p class="aviso-pesos ayuda" id="avisoPesos"></p>
+
+      <p class="panel__sub">Desempeño de cada alternativa</p>
+      <p class="ayuda">Puede usar decimales con coma o punto. Se permiten valores negativos, con un aviso si la normalización vectorial no es apropiada.</p>
       <div class="tabla-contenedor">
         <table class="matriz-decision" id="tablaMatrizDecision"><caption id="captionMatriz">Desempeño de cada alternativa</caption></table>
       </div>
       <div class="acciones">
         <button type="button" class="boton" id="calcularResultados">Calcular resultados</button>
-        <button type="button" class="boton boton--secundario" id="limpiarMatriz">Vaciar matriz</button>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- =====================================================================
-     PASO 3: PESOS
-     ===================================================================== -->
-<section class="seccion" id="seccionPesos">
-  <div class="seccion__cabeza">
-    <span class="seccion__num" aria-hidden="true">3</span>
-    <div>
-      <h2 class="seccion__titulo">Pesos de los criterios</h2>
-      <p class="seccion__texto">Indique la importancia de cada criterio. Puede escribir los pesos usted mismo o pedir que se calculen con la entropía de Shannon a partir de los datos.</p>
-    </div>
-  </div>
-
-  <div class="panel">
-    <div id="avisoConfiguracionPesos">
-      <p class="ayuda">Confirme primero la configuración del paso 1.</p>
-    </div>
-    <div id="contenedorPesos" hidden>
-      <div class="campo" style="max-width:32rem">
-        <label for="metodoPesos">Cómo obtener los pesos</label>
-        <select id="metodoPesos">
-          <option value="manual">Manuales: los escribo yo</option>
-          <option value="entropia">Entropía de Shannon: calculados a partir de los datos</option>
-        </select>
-        <span class="ayuda">La entropía da más peso a los criterios que más diferencian a las alternativas. Requiere haber llenado la matriz de decisión.</span>
-      </div>
-      <div id="pesosManuales">
-        <p class="panel__sub">Pesos por criterio</p>
-        <p class="ayuda">Escriba un valor por criterio. No es necesario que sumen 1: se normalizan automáticamente. La suma actual aparece abajo.</p>
-        <div class="rejilla" id="camposPesos"></div>
-        <p id="sumaPesos" class="ayuda"></p>
-      </div>
-      <div id="pesosEntropiaAviso" hidden>
-        <p class="ayuda">Los pesos se calcularán con la entropía de Shannon cuando pulse «Calcular resultados». Se mostrarán en la sección de resultados.</p>
+        <button type="button" class="boton boton--secundario" id="limpiarMatriz">Vaciar matriz de decisión</button>
       </div>
     </div>
   </div>
@@ -694,7 +674,7 @@ details.desplegable > div { padding: 0 1.2rem 1.1rem; }
      ===================================================================== -->
 <section class="seccion" id="seccionResultados">
   <div class="seccion__cabeza">
-    <span class="seccion__num" aria-hidden="true">4</span>
+    <span class="seccion__num" aria-hidden="true">3</span>
     <div>
       <h2 class="seccion__titulo">Resultados</h2>
       <p class="seccion__texto">Recomendación, coeficientes de cercanía, matrices intermedias y soluciones ideales. Todo se recalcula cuando cambia algún dato.</p>
@@ -715,7 +695,7 @@ details.desplegable > div { padding: 0 1.2rem 1.1rem; }
      ===================================================================== -->
 <section class="seccion" id="seccionSensibilidad">
   <div class="seccion__cabeza">
-    <span class="seccion__num" aria-hidden="true">5</span>
+    <span class="seccion__num" aria-hidden="true">4</span>
     <div>
       <h2 class="seccion__titulo">Análisis de sensibilidad</h2>
       <p class="seccion__texto">Responde a la pregunta: ¿qué tendría que cambiar en los pesos para que la recomendación fuera otra? Modifique el peso de un criterio y observe cómo se reordenan las alternativas.</p>
@@ -749,7 +729,7 @@ details.desplegable > div { padding: 0 1.2rem 1.1rem; }
      ===================================================================== -->
 <section class="seccion" id="seccionExportacion">
   <div class="seccion__cabeza">
-    <span class="seccion__num" aria-hidden="true">6</span>
+    <span class="seccion__num" aria-hidden="true">5</span>
     <div>
       <h2 class="seccion__titulo">Exportación</h2>
       <p class="seccion__texto">Descargue el libro de Excel con todos los cálculos paso a paso, o el informe ejecutivo en PDF. Los archivos con datos de prueba se marcan con el prefijo PRUEBA.</p>
@@ -807,11 +787,13 @@ details.desplegable > div { padding: 0 1.2rem 1.1rem; }
     <h2>Autoría y uso</h2>
     <p data-app="nota">Este aplicativo fue desarrollado por Mario Sergio Gómez Rueda. Su uso es de carácter académico y cualquier otro uso se regirá por el derecho de la propiedad intelectual.</p>
   </div>
+  <h2>Cómo citar</h2>
+  <p>Si usa esta aplicación en su trabajo, cítela así en formato APA 7:</p>
+  <p style="padding-left:1.6rem;text-indent:-1.6rem">Gómez Rueda, M. S. (2026). <em>Éngista TOPSIS</em> (Versión 1.0) [Software]. https://mgomezr1.github.io/engista-topsis/</p>
   <h2>Referencias</h2>
+  <p>Behzadian, M., Otaghsara, S. K., Yazdani, M., &amp; Ignatius, J. (2012). A state-of the-art survey of TOPSIS applications. <em>Expert Systems with Applications, 39</em>(17), 13051–13069. https://doi.org/10.1016/j.eswa.2012.05.056</p>
   <p>Hwang, C.-L., &amp; Yoon, K. (1981). <em>Multiple attribute decision making: Methods and applications</em>. Springer-Verlag. https://doi.org/10.1007/978-3-642-48318-9</p>
   <p>Tzeng, G.-H., &amp; Huang, J.-J. (2011). <em>Multiple attribute decision making: Methods and applications</em>. CRC Press.</p>
-  <p>Behzadian, M., Otaghsara, S. K., Yazdani, M., &amp; Ignatius, J. (2012). A state-of the-art survey of TOPSIS applications. <em>Expert Systems with Applications, 39</em>(17), 13051–13069. https://doi.org/10.1016/j.eswa.2012.05.056</p>
-  <p>Shannon, C. E. (1948). A mathematical theory of communication. <em>The Bell System Technical Journal, 27</em>(3), 379–423. https://doi.org/10.1002/j.1538-7305.1948.tb01338.x</p>
 </section>
 
 </div>
@@ -859,16 +841,18 @@ const NOMBRES_PESOS = { manual: "Manuales", entropia: "Entropía de Shannon" };
 /* Paleta categórica validada para fondo oscuro. */
 const COLORES_SERIES = ["#5FE0C8", "#FF8A6B", "#7CB0FF", "#FFD166", "#C792EA", "#8DD98D", "#F78DA7", "#4FD1E0"];
 
-/* Estado único de la aplicación. */
+/* Estado único de la aplicación.
+   El sentido de un criterio es "max" (maximizar, beneficio) o "min" (minimizar,
+   costo). Internamente el motor de cálculo usa tipo "beneficio"/"costo", que se
+   deduce del sentido con sentidoATipo(). */
 const estado = {
   objetivo: "",
   numeroAlternativas: 0,
   numeroCriterios: 0,
-  alternativas: [],
-  criterios: [],          // [{ nombre, tipo: "beneficio"|"costo" }]
+  alternativas: [],       // nombres de alternativas
+  criterios: [],          // [{ nombre, sentido: "max"|"min" }]
+  pesos: [],              // peso por criterio (texto o número), deben sumar 1
   normalizacion: "vectorial",
-  metodoPesos: "manual",
-  pesosManuales: [],      // texto por criterio
   matriz: [],             // texto por celda [alternativa][criterio]
   configuracionConfirmada: false,
   origen: { tipo: "ninguno", detalle: "", modificado: false },
@@ -876,6 +860,10 @@ const estado = {
   resultadosDesactualizados: false,
   sensibilidad: null
 };
+
+/* Correspondencia entre el sentido visible y el tipo interno del motor. */
+const sentidoATipo = (sentido) => (sentido === "min" ? "costo" : "beneficio");
+const tipoASentido = (tipo) => (tipo === "costo" ? "min" : "max");
 
 /* =========================================================================
    2. UTILIDADES GENERALES
@@ -1049,20 +1037,21 @@ function ordenarPorCercania(nombres, cercania) {
   return lista;
 }
 
-/** Construye el objeto de resultados completo a partir de un modelo. */
+/** Construye el objeto de resultados completo a partir de un modelo.
+   Cada criterio puede venir con .tipo ("beneficio"/"costo") o con .sentido
+   ("max"/"min"); se normaliza a ambas formas. Los pesos son manuales
+   (modelo.pesos o modelo.pesosManuales) y se normalizan a suma 1. */
 function calcularModelo(modelo) {
-  const { objetivo, alternativas, criterios, matriz, normalizacion, metodoPesos, pesosManuales } = modelo;
+  const { objetivo, alternativas, matriz, normalizacion } = modelo;
+  const criterios = modelo.criterios.map((c) => {
+    const tipo = c.tipo || sentidoATipo(c.sentido);
+    return { nombre: c.nombre, tipo, sentido: tipoASentido(tipo) };
+  });
   const tipos = criterios.map((c) => c.tipo);
   const nombresCriterios = criterios.map((c) => c.nombre);
 
-  let pesos, pesosOrigen;
-  if (metodoPesos === "entropia") {
-    pesos = calcularPesosEntropia(matriz);
-    pesosOrigen = "entropia";
-  } else {
-    pesos = normalizarPesos(pesosManuales);
-    pesosOrigen = "manual";
-  }
+  const pesosEntrada = modelo.pesos != null ? modelo.pesos : modelo.pesosManuales;
+  const pesos = normalizarPesos(pesosEntrada.map(Number));
 
   const t = ejecutarTopsis(matriz, tipos, pesos, normalizacion);
   const ranking = ordenarPorCercania(alternativas, t.cercania);
@@ -1075,7 +1064,7 @@ function calcularModelo(modelo) {
 
   return {
     objetivo, alternativas, criterios, nombresCriterios, tipos,
-    matriz, normalizacion, metodoPesos: pesosOrigen, pesos,
+    matriz, normalizacion, metodoPesos: "manual", pesos,
     normalizada: t.norm, ponderada: t.ponderada,
     idealPos: t.idealPos, idealNeg: t.idealNeg,
     distPos: t.distPos, distNeg: t.distNeg, cercania: t.cercania,
@@ -1182,8 +1171,9 @@ function marcarResultadosDesactualizados() {
    6. CONFIGURACIÓN Y CAMPOS DINÁMICOS
    ========================================================================= */
 
-/** Paso 1: valida los números y genera los campos de nombres. */
-function generarConfiguracion() {
+/** Paso 1: valida números, arma el estado dimensionado y construye la matriz.
+   Conserva datos previos cuando el tamaño lo permite, como en Áristos ELECTRE. */
+function confirmarConfiguracion() {
   ["objetivo", "numeroAlternativas", "numeroCriterios"].forEach((c) => marcarCampoError(c, ""));
   const objetivo = $("objetivo").value.trim();
   if (objetivo === "") { marcarCampoError("objetivo", "Escriba el objetivo de la decisión."); $("objetivo").focus(); return false; }
@@ -1193,126 +1183,149 @@ function generarConfiguracion() {
   const kC = interpretarEntero($("numeroCriterios").value, 2, 20);
   if (!kC.valido) { marcarCampoError("numeroCriterios", "Escriba un número entre 2 y 20."); $("numeroCriterios").focus(); return false; }
 
+  const nA = mA.valor, nC = kC.valor;
   estado.objetivo = objetivo;
-  estado.numeroAlternativas = mA.valor;
-  estado.numeroCriterios = kC.valor;
+  estado.numeroAlternativas = nA;
+  estado.numeroCriterios = nC;
   estado.normalizacion = $("metodoNormalizacion").value;
 
-  // Conserva nombres previos si el tamaño coincide
-  const alternativasPrevias = estado.alternativas.length === mA.valor ? estado.alternativas : Array.from({ length: mA.valor }, (_, i) => `Alternativa ${i + 1}`);
-  const criteriosPrevios = estado.criterios.length === kC.valor ? estado.criterios : Array.from({ length: kC.valor }, (_, i) => ({ nombre: `Criterio ${i + 1}`, tipo: "beneficio" }));
+  // Preservar datos existentes al redimensionar cuando sea posible
+  const previa = estado.matriz;
+  estado.alternativas = Array.from({ length: nA }, (_, i) => estado.alternativas[i] || `Alternativa ${i + 1}`);
+  estado.criterios = Array.from({ length: nC }, (_, j) => estado.criterios[j] || { nombre: `Criterio ${j + 1}`, sentido: "max" });
+  estado.pesos = Array.from({ length: nC }, (_, j) => (estado.pesos[j] != null && estado.pesos[j] !== "" ? estado.pesos[j] : ""));
+  estado.matriz = Array.from({ length: nA }, (_, i) =>
+    Array.from({ length: nC }, (_, j) => (previa[i] && previa[i][j] != null ? previa[i][j] : "")));
 
-  $("nombresAlternativas").innerHTML = alternativasPrevias.map((nombre, i) =>
-    `<div class="campo"><label for="alt${i}">Alternativa ${i + 1}</label><input type="text" id="alt${i}" class="nombre-alternativa" maxlength="80" value="${escaparHTML(nombre)}" autocomplete="off"></div>`
-  ).join("");
-
-  $("nombresCriterios").innerHTML = `<div class="rejilla">${criteriosPrevios.map((criterio, j) =>
-    `<div class="campo"><label for="crit${j}">Criterio ${j + 1}</label><input type="text" id="crit${j}" class="nombre-criterio" maxlength="80" value="${escaparHTML(criterio.nombre)}" autocomplete="off"><select id="tipo${j}" class="tipo-criterio" aria-label="Tipo del criterio ${j + 1}"><option value="beneficio"${criterio.tipo === "beneficio" ? " selected" : ""}>Beneficio (más es mejor)</option><option value="costo"${criterio.tipo === "costo" ? " selected" : ""}>Costo (menos es mejor)</option></select></div>`
-  ).join("")}</div>`;
-
-  $("camposNombres").hidden = false;
-  return true;
-}
-
-function limpiarFormulario() {
-  ["objetivo", "numeroAlternativas", "numeroCriterios"].forEach((id) => { $(id).value = ""; marcarCampoError(id, ""); });
-  $("metodoNormalizacion").value = "vectorial";
-  $("camposNombres").hidden = true;
-}
-
-/** Paso 1: confirma nombres y construye la matriz y los pesos. */
-function confirmarConfiguracion() {
-  const nombresAlt = Array.from(document.querySelectorAll(".nombre-alternativa")).map((i) => i.value);
-  const nombresCrit = Array.from(document.querySelectorAll(".nombre-criterio")).map((i) => i.value);
-  const tipos = Array.from(document.querySelectorAll(".tipo-criterio")).map((s) => s.value);
-
-  const vA = validarNombres(nombresAlt, "una alternativa");
-  if (!vA.valido) { mostrarMensaje("error", "Revise los nombres de las alternativas", [vA.motivo]); return false; }
-  const vC = validarNombres(nombresCrit, "un criterio");
-  if (!vC.valido) { mostrarMensaje("error", "Revise los nombres de los criterios", [vC.motivo]); return false; }
-
-  const cambioTamano = estado.alternativas.length !== vA.nombres.length || estado.criterios.length !== vC.nombres.length;
-
-  estado.alternativas = vA.nombres;
-  estado.criterios = vC.nombres.map((nombre, j) => ({ nombre, tipo: tipos[j] }));
-  estado.normalizacion = $("metodoNormalizacion").value;
-
-  if (cambioTamano || estado.matriz.length !== vA.nombres.length) {
-    estado.matriz = crearMatrizTexto(vA.nombres.length, vC.nombres.length, "");
-    estado.pesosManuales = vC.nombres.map(() => "1");
-  }
   estado.configuracionConfirmada = true;
+  estado.resultados = null;
   if (estado.origen.tipo === "ninguno") estado.origen = { tipo: "manual", detalle: "", modificado: false };
 
+  construirTablaCriterios();
   construirMatrizDecision();
-  construirCamposPesos();
   prepararSensibilidad();
   marcarResultadosDesactualizados();
-  mostrarMensaje("exito", "Configuración confirmada", [`${estado.alternativas.length} alternativas y ${estado.criterios.length} criterios. Ya puede llenar la matriz de decisión.`]);
   actualizarInsigniaOrigen();
+  mostrarMensaje("exito", "Configuración confirmada", [`${nA} alternativas y ${nC} criterios. Nombre los criterios, elija el sentido y el peso, y llene la matriz.`]);
+  $("seccionDecision").scrollIntoView({ behavior: "smooth", block: "start" });
   return true;
 }
 
 /* =========================================================================
-   7. MATRIZ DE DECISIÓN Y PESOS
+   7. MATRIZ DE DECISIÓN: CRITERIOS, SENTIDO, PESO Y DESEMPEÑO
    ========================================================================= */
 
+/** Construye la tabla de criterios: nombre, sentido (maximizar/minimizar) y peso. */
+function construirTablaCriterios() {
+  const cuerpo = $("tablaCriterios").querySelector("tbody");
+  cuerpo.innerHTML = "";
+  estado.criterios.forEach((criterio, j) => {
+    const tr = document.createElement("tr");
+
+    const tdNombre = document.createElement("td");
+    tdNombre.className = "cc-nombre";
+    const inpNombre = document.createElement("input");
+    inpNombre.type = "text"; inpNombre.maxLength = 80; inpNombre.value = criterio.nombre;
+    inpNombre.setAttribute("aria-label", "Nombre del criterio " + (j + 1));
+    inpNombre.addEventListener("input", () => { estado.criterios[j].nombre = inpNombre.value; sincronizarCabecerasDecision(); marcarResultadosDesactualizados(); });
+    tdNombre.appendChild(inpNombre);
+
+    const tdSentido = document.createElement("td");
+    const toggle = document.createElement("div");
+    toggle.className = "sentido-toggle";
+    const bMax = document.createElement("button");
+    bMax.type = "button"; bMax.textContent = "Maximizar";
+    const bMin = document.createElement("button");
+    bMin.type = "button"; bMin.textContent = "Minimizar";
+    const pintar = () => {
+      const s = estado.criterios[j].sentido;
+      bMax.className = s === "max" ? "activo-max" : "";
+      bMin.className = s === "min" ? "activo-min" : "";
+      bMax.setAttribute("aria-pressed", s === "max");
+      bMin.setAttribute("aria-pressed", s === "min");
+    };
+    bMax.addEventListener("click", () => { estado.criterios[j].sentido = "max"; pintar(); sincronizarCabecerasDecision(); marcarResultadosDesactualizados(); });
+    bMin.addEventListener("click", () => { estado.criterios[j].sentido = "min"; pintar(); sincronizarCabecerasDecision(); marcarResultadosDesactualizados(); });
+    pintar();
+    toggle.appendChild(bMax); toggle.appendChild(bMin);
+    tdSentido.appendChild(toggle);
+
+    const tdPeso = document.createElement("td");
+    tdPeso.className = "cc-peso";
+    const inpPeso = document.createElement("input");
+    inpPeso.type = "number"; inpPeso.min = "0"; inpPeso.step = "0.01";
+    inpPeso.value = estado.pesos[j]; inpPeso.setAttribute("inputmode", "decimal");
+    inpPeso.setAttribute("aria-label", "Peso del criterio " + (j + 1));
+    inpPeso.addEventListener("input", () => { estado.pesos[j] = inpPeso.value === "" ? "" : Number(inpPeso.value); actualizarAvisoPesos(); marcarResultadosDesactualizados(); });
+    const etq = document.createElement("div");
+    etq.className = "cc-etq"; etq.textContent = "peso relativo";
+    tdPeso.appendChild(inpPeso); tdPeso.appendChild(etq);
+
+    tr.appendChild(tdNombre); tr.appendChild(tdSentido); tr.appendChild(tdPeso);
+    cuerpo.appendChild(tr);
+  });
+  actualizarAvisoPesos();
+}
+
+/** Muestra la suma de pesos y avisa si no suma 1. */
+function actualizarAvisoPesos() {
+  const pesos = estado.pesos.map((p) => (p === "" || isNaN(p) ? 0 : Number(p)));
+  const total = sumar(pesos);
+  const aviso = $("avisoPesos");
+  if (total <= 0) { aviso.textContent = "Los pesos deben ser no negativos y sumar 1 (100 %)."; aviso.style.color = "var(--texto-3)"; return; }
+  if (Math.abs(total - 1) < 1e-9) {
+    aviso.textContent = `Suma de pesos: 1,0000 (correcto). Reparto: ${estado.criterios.map((c, j) => c.nombre + " " + formatearPorcentaje(pesos[j])).join(" · ")}`;
+    aviso.style.color = "var(--exito)";
+  } else {
+    aviso.textContent = `Suma de pesos: ${formatearNumero(total, 4)}. Deben sumar 1 (100 %); ajuste los valores. Diferencia: ${formatearNumero(total - 1, 4)}.`;
+    aviso.style.color = "var(--advertencia)";
+  }
+}
+
+/** Construye la cabecera y el cuerpo de la matriz de decisión. */
 function construirMatrizDecision() {
   $("avisoConfiguracionDecision").hidden = true;
   $("contenedorMatrizDecision").hidden = false;
   const tabla = $("tablaMatrizDecision");
-  const encabezado = `<thead><tr><th>Alternativa \\ Criterio</th>${estado.criterios.map((c) =>
-    `<th class="criterio-${c.tipo === "beneficio" ? "beneficio" : "costo"}">${escaparHTML(c.nombre)}<span class="tipo-etiqueta tipo-etiqueta--${c.tipo}">${c.tipo === "beneficio" ? "beneficio ▲" : "costo ▼"}</span></th>`
+  const encabezado = `<thead><tr id="cabeceraDecision"><th class="esquina">Alternativa \\ Criterio</th>${estado.criterios.map((c, j) =>
+    `<th data-col="${j}"><div class="crit-cab"><span class="crit-nombre">${escaparHTML(c.nombre)}</span><span class="crit-meta crit-sentido-${c.sentido}">${c.sentido === "max" ? "↑ maximizar" : "↓ minimizar"}</span></div></th>`
   ).join("")}</tr></thead>`;
   const cuerpo = `<tbody>${estado.alternativas.map((alt, i) =>
-    `<tr><th scope="row">${escaparHTML(alt)}</th>${estado.criterios.map((_, j) =>
-      `<td><input type="text" class="celda-matriz" data-i="${i}" data-j="${j}" inputmode="decimal" value="${escaparHTML(estado.matriz[i][j])}" aria-label="${escaparHTML(alt)} en ${escaparHTML(estado.criterios[j].nombre)}"></td>`
+    `<tr><th scope="row"><input type="text" class="nombre-alternativa" data-i="${i}" maxlength="80" value="${escaparHTML(alt)}" style="background:transparent;font-weight:600;min-width:130px;text-align:left" aria-label="Nombre de la alternativa ${i + 1}"></th>${estado.criterios.map((_, j) =>
+      `<td><input type="text" class="celda-matriz" data-i="${i}" data-j="${j}" inputmode="decimal" value="${escaparHTML(estado.matriz[i][j])}" aria-label="Desempeño de la alternativa ${i + 1} en el criterio ${j + 1}"></td>`
     ).join("")}</tr>`
   ).join("")}</tbody>`;
   $("captionMatriz").textContent = `Desempeño de cada alternativa en cada criterio (${estado.alternativas.length} × ${estado.criterios.length})`;
   tabla.innerHTML = encabezado + cuerpo;
 }
 
-function construirCamposPesos() {
-  $("avisoConfiguracionPesos").hidden = true;
-  $("contenedorPesos").hidden = false;
-  $("metodoPesos").value = estado.metodoPesos;
-  $("camposPesos").innerHTML = estado.criterios.map((c, j) =>
-    `<div class="campo"><label for="peso${j}">${escaparHTML(c.nombre)}</label><input type="text" id="peso${j}" class="campo-peso" data-j="${j}" inputmode="decimal" value="${escaparHTML(estado.pesosManuales[j] ?? "1")}"></div>`
-  ).join("");
-  alternarModoPesos();
-  actualizarSumaPesos();
-}
-
-function alternarModoPesos() {
-  const entropia = $("metodoPesos").value === "entropia";
-  $("pesosManuales").hidden = entropia;
-  $("pesosEntropiaAviso").hidden = !entropia;
-  estado.metodoPesos = $("metodoPesos").value;
-}
-
-function actualizarSumaPesos() {
-  const valores = Array.from(document.querySelectorAll(".campo-peso")).map((i) => interpretarPeso(i.value));
-  if (valores.some((v) => !v.valido)) { $("sumaPesos").textContent = "Algún peso no es un número válido."; return; }
-  $("sumaPesos").textContent = `Suma actual: ${formatearNumero(sumar(valores.map((v) => v.valor)), 2)} (se normaliza a 100 %).`;
+/** Sincroniza las cabeceras de la matriz cuando cambian nombres o sentidos. */
+function sincronizarCabecerasDecision() {
+  if (!estado.configuracionConfirmada) return;
+  const fila = $("tablaMatrizDecision").querySelector("thead tr");
+  if (!fila) return;
+  fila.querySelectorAll("th[data-col]").forEach((th) => {
+    const j = Number(th.dataset.col);
+    const c = estado.criterios[j];
+    th.innerHTML = `<div class="crit-cab"><span class="crit-nombre">${escaparHTML(c.nombre)}</span><span class="crit-meta crit-sentido-${c.sentido}">${c.sentido === "max" ? "↑ maximizar" : "↓ minimizar"}</span></div>`;
+  });
 }
 
 function leerMatrizDesdeInterfaz() {
   document.querySelectorAll(".celda-matriz").forEach((celda) => {
     estado.matriz[Number(celda.dataset.i)][Number(celda.dataset.j)] = celda.value;
   });
-}
-
-function leerPesosDesdeInterfaz() {
-  document.querySelectorAll(".campo-peso").forEach((celda) => {
-    estado.pesosManuales[Number(celda.dataset.j)] = celda.value;
+  document.querySelectorAll(".nombre-alternativa").forEach((celda) => {
+    estado.alternativas[Number(celda.dataset.i)] = celda.value;
   });
 }
 
+/** Punto 2: vacía la matriz de decisión (los desempeños), como el vaciado del paso 1. */
 function vaciarMatriz() {
   estado.matriz = crearMatrizTexto(estado.alternativas.length, estado.criterios.length, "");
   construirMatrizDecision();
   marcarResultadosDesactualizados();
+  mostrarMensaje("info", "Matriz de decisión vaciada", ["Se borraron los desempeños. Los criterios, sentidos y pesos se conservan."]);
 }
 
 /* =========================================================================
@@ -1322,7 +1335,21 @@ function vaciarMatriz() {
 /** Lee la interfaz, valida y arma el modelo listo para calcular. */
 function construirModeloDesdeEstado() {
   leerMatrizDesdeInterfaz();
-  leerPesosDesdeInterfaz();
+
+  // Validación de nombres de criterios y alternativas
+  const vA = validarNombres(estado.alternativas, "una alternativa");
+  if (!vA.valido) return { valido: false, motivo: vA.motivo };
+  const vC = validarNombres(estado.criterios.map((c) => c.nombre), "un criterio");
+  if (!vC.valido) return { valido: false, motivo: vC.motivo };
+  estado.alternativas = vA.nombres;
+  estado.criterios.forEach((c, j) => { c.nombre = vC.nombres[j]; });
+
+  // Validación de pesos: no negativos y suma 1
+  const pesosValor = estado.pesos.map(interpretarPeso);
+  if (pesosValor.some((v) => !v.valido)) return { valido: false, motivo: "Todos los pesos deben ser números no negativos." };
+  const sumaPesos = sumar(pesosValor.map((v) => v.valor));
+  if (sumaPesos === 0) return { valido: false, motivo: "Los pesos no pueden sumar cero." };
+  if (Math.abs(sumaPesos - 1) > 1e-6) return { valido: false, motivo: `Los pesos deben sumar 1 (100 %). La suma actual es ${formatearNumero(sumaPesos, 4)}. Ajústelos en la tabla de criterios.` };
 
   // Validación de la matriz: todas las celdas deben tener número
   const matriz = [];
@@ -1346,21 +1373,12 @@ function construirModeloDesdeEstado() {
   }
   document.querySelectorAll(".celda-matriz").forEach((c) => c.classList.remove("invalido"));
 
-  // Validación de pesos manuales
-  let pesosManuales = [];
-  if (estado.metodoPesos === "manual") {
-    const valores = estado.pesosManuales.map(interpretarPeso);
-    if (valores.some((v) => !v.valido)) return { valido: false, motivo: "Todos los pesos deben ser números no negativos." };
-    if (sumar(valores.map((v) => v.valor)) === 0) return { valido: false, motivo: "Los pesos no pueden sumar cero." };
-    pesosManuales = valores.map((v) => v.valor);
-  }
-
   return {
     valido: true,
     modelo: {
       objetivo: estado.objetivo, alternativas: estado.alternativas.slice(),
-      criterios: estado.criterios.map((c) => ({ ...c })), matriz,
-      normalizacion: estado.normalizacion, metodoPesos: estado.metodoPesos, pesosManuales
+      criterios: estado.criterios.map((c) => ({ nombre: c.nombre, sentido: c.sentido })), matriz,
+      normalizacion: estado.normalizacion, pesos: pesosValor.map((v) => v.valor)
     }
   };
 }
@@ -1441,7 +1459,6 @@ function renderizarResultados(r) {
     ["Alternativas", String(r.alternativas.length)],
     ["Criterios", String(r.criterios.length)],
     ["Normalización", NOMBRES_NORMALIZACION[r.normalizacion]],
-    ["Pesos", NOMBRES_PESOS[r.metodoPesos]],
     ["Origen de los datos", r.descripcionOrigen || descripcionOrigen(r.origen)]
   ]);
   html += `</div></details>`;
@@ -1598,7 +1615,6 @@ function prepararDatosExportacion(resultados = estado.resultados) {
     ["Objetivo", r.objetivo],
     ["Origen de los datos", r.descripcionOrigen || descripcionOrigen(r.origen)],
     ["Normalización", NOMBRES_NORMALIZACION[r.normalizacion]],
-    ["Método de pesos", NOMBRES_PESOS[r.metodoPesos]],
     ["Fecha del cálculo", r.fecha.toLocaleString("es-CO")],
     ["Número de alternativas", r.alternativas.length, "0"],
     ["Número de criterios", r.criterios.length, "0"],
@@ -1657,7 +1673,7 @@ function crearHojaDecision(datos) {
   r.pesos.forEach((p, j) => h.poner(filaPesos, 1 + j, p, { formato: FORMATO_PORCENTAJE }));
   h.poner(filaPesos + 1, 0, "Suma de pesos");
   h.poner(filaPesos + 1, 1, sumar(r.pesos), { formato: FORMATO_PORCENTAJE, formula: `SUM(${refCelda(filaPesos, 1)}:${refCelda(filaPesos, k)})` });
-  h.poner(filaPesos + 3, 0, `Normalización: ${NOMBRES_NORMALIZACION[r.normalizacion]}. Pesos: ${NOMBRES_PESOS[r.metodoPesos]}.`);
+  h.poner(filaPesos + 3, 0, `Normalización: ${NOMBRES_NORMALIZACION[r.normalizacion]}. Pesos asignados por el evaluador (suman 1).`);
   // Guardamos referencias de posición para otras hojas
   datos._decision = { filaEnc, filaTipos, filaPesos, m, k };
   h.anchos([26, ...r.nombresCriterios.map((n) => Math.min(22, Math.max(12, n.length + 2)))]);
@@ -2067,7 +2083,7 @@ function generarInformePDF(resultados = estado.resultados) {
   const pesoMax = Math.max(...r.pesos);
   const critPrincipal = r.criterios[r.pesos.indexOf(pesoMax)];
   hechos.push(`El criterio con mayor peso es ${critPrincipal.nombre} (${formatearPorcentaje(pesoMax)}).`);
-  hechos.push(`La matriz se normalizo por el metodo ${NOMBRES_NORMALIZACION[r.normalizacion].toLowerCase()} y los pesos son de tipo ${NOMBRES_PESOS[r.metodoPesos].toLowerCase()}.`);
+  hechos.push(`La matriz se normalizo por el metodo ${NOMBRES_NORMALIZACION[r.normalizacion].toLowerCase()} y los pesos fueron asignados por el evaluador.`);
   if (r.avisoNegativos) hechos.push("Atencion: la matriz contiene valores negativos con normalizacion vectorial; se recomienda la normalizacion min-max en ese caso.");
   hechos.forEach((hecho) => {
     doc.asegurar(14);
@@ -2116,9 +2132,9 @@ function generarInformePDF(resultados = estado.resultados) {
   doc.tituloSeccion("6. Nota metodologica");
   [
     `TOPSIS (Hwang y Yoon, 1981) ordena las alternativas segun su cercania a una solucion ideal y su lejania de una anti ideal. Los pasos son: normalizar la matriz de decision, ponderarla por la importancia de cada criterio, identificar A+ y A-, medir la distancia euclidiana de cada alternativa a ambas y calcular Ci = D- / (D+ + D-).`,
-    `En este analisis la normalizacion fue ${NOMBRES_NORMALIZACION[r.normalizacion].toLowerCase()} y los pesos ${NOMBRES_PESOS[r.metodoPesos].toLowerCase()}. El resultado es un apoyo a la decision y depende de la calidad de los datos ingresados; no sustituye el criterio profesional.`
+    `En este analisis la normalizacion fue ${NOMBRES_NORMALIZACION[r.normalizacion].toLowerCase()} y los pesos, que suman 1, fueron asignados por el evaluador. El resultado es un apoyo a la decision y depende de la calidad de los datos ingresados; no sustituye el criterio profesional.`
   ].forEach((texto) => doc.parrafo(texto, { tamano: 8.8, color: COLORES_PDF.tinta }));
-  doc.parrafo("Referencias: Hwang, C.-L., & Yoon, K. (1981). Multiple attribute decision making: Methods and applications. Springer. Behzadian, M., et al. (2012). A state-of-the-art survey of TOPSIS applications. Expert Systems with Applications, 39(17). Shannon, C. E. (1948). A mathematical theory of communication. Bell System Technical Journal, 27(3).", { tamano: 7.8, color: COLORES_PDF.tinta2, despues: 12 });
+  doc.parrafo("Referencias: Hwang, C.-L., & Yoon, K. (1981). Multiple attribute decision making: Methods and applications. Springer. Behzadian, M., et al. (2012). A state-of-the-art survey of TOPSIS applications. Expert Systems with Applications, 39(17). Tzeng, G.-H., & Huang, J.-J. (2011). Multiple attribute decision making: Methods and applications. CRC Press.", { tamano: 7.8, color: COLORES_PDF.tinta2, despues: 12 });
 
   const lineasNota = doc.envolver(APLICATIVO.nota, doc.anchoUtil - 28, 8.6);
   const altoNota = lineasNota.length * 12.5 + 30;
@@ -2192,33 +2208,33 @@ const DEFINICION_ESCENARIOS = [
     id: "proveedor", nombre: "Prueba 1: seleccionar proveedor (3 alternativas, 4 criterios)",
     objetivo: "[Datos de prueba] Seleccionar proveedor de equipos",
     alternativas: ["Proveedor A", "Proveedor B", "Proveedor C"],
-    criterios: [{ nombre: "Precio", tipo: "costo" }, { nombre: "Calidad", tipo: "beneficio" }, { nombre: "Garantia (meses)", tipo: "beneficio" }, { nombre: "Tiempo de entrega (dias)", tipo: "costo" }],
+    criterios: [{ nombre: "Precio", sentido: "min" }, { nombre: "Calidad", sentido: "max" }, { nombre: "Garantia (meses)", sentido: "max" }, { nombre: "Tiempo de entrega (dias)", sentido: "min" }],
     matriz: [[1200, 8, 24, 15], [1000, 7, 12, 10], [1400, 9, 36, 20]],
-    metodoPesos: "manual", pesos: [4, 3, 2, 1], normalizacion: "vectorial"
+    pesos: [0.4, 0.3, 0.2, 0.1], normalizacion: "vectorial"
   },
   {
     id: "clasico", nombre: "Prueba 2: caso analitico 3 x 4 (pesos iguales)",
     objetivo: "[Datos de prueba] Caso de verificacion analitica",
     alternativas: ["Alternativa 1", "Alternativa 2", "Alternativa 3"],
-    criterios: [{ nombre: "C1", tipo: "beneficio" }, { nombre: "C2", tipo: "beneficio" }, { nombre: "C3", tipo: "beneficio" }, { nombre: "C4", tipo: "beneficio" }],
+    criterios: [{ nombre: "C1", sentido: "max" }, { nombre: "C2", sentido: "max" }, { nombre: "C3", sentido: "max" }, { nombre: "C4", sentido: "max" }],
     matriz: [[7, 9, 9, 8], [8, 7, 8, 7], [9, 6, 8, 9]],
-    metodoPesos: "manual", pesos: [1, 1, 1, 1], normalizacion: "vectorial"
+    pesos: [0.25, 0.25, 0.25, 0.25], normalizacion: "vectorial"
   },
   {
-    id: "grande", nombre: "Prueba 3: modelo grande (5 alternativas, 6 criterios, entropia)",
-    objetivo: "[Datos de prueba] Modelo de mayor tamano con pesos por entropia",
+    id: "grande", nombre: "Prueba 3: modelo grande (5 alternativas, 6 criterios)",
+    objetivo: "[Datos de prueba] Modelo de mayor tamano",
     alternativas: ["Opcion A", "Opcion B", "Opcion C", "Opcion D", "Opcion E"],
-    criterios: [{ nombre: "Costo", tipo: "costo" }, { nombre: "Rendimiento", tipo: "beneficio" }, { nombre: "Fiabilidad", tipo: "beneficio" }, { nombre: "Consumo", tipo: "costo" }, { nombre: "Soporte", tipo: "beneficio" }, { nombre: "Vida util", tipo: "beneficio" }],
+    criterios: [{ nombre: "Costo", sentido: "min" }, { nombre: "Rendimiento", sentido: "max" }, { nombre: "Fiabilidad", sentido: "max" }, { nombre: "Consumo", sentido: "min" }, { nombre: "Soporte", sentido: "max" }, { nombre: "Vida util", sentido: "max" }],
     matriz: [[250, 80, 90, 12, 7, 5], [300, 85, 88, 10, 8, 7], [200, 70, 95, 15, 6, 4], [280, 90, 85, 11, 9, 6], [320, 88, 92, 9, 8, 8]],
-    metodoPesos: "entropia", pesos: [], normalizacion: "minmax"
+    pesos: [0.25, 0.2, 0.2, 0.15, 0.1, 0.1], normalizacion: "minmax"
   },
   {
     id: "minmax", nombre: "Prueba 4: normalizacion min-max con valores dispares",
     objetivo: "[Datos de prueba] Escalas muy diferentes entre criterios",
     alternativas: ["Ciudad 1", "Ciudad 2", "Ciudad 3"],
-    criterios: [{ nombre: "Poblacion", tipo: "beneficio" }, { nombre: "Costo de vida", tipo: "costo" }, { nombre: "Clima (escala 1-10)", tipo: "beneficio" }],
+    criterios: [{ nombre: "Poblacion", sentido: "max" }, { nombre: "Costo de vida", sentido: "min" }, { nombre: "Clima (escala 1-10)", sentido: "max" }],
     matriz: [[2500000, 3500, 8], [800000, 2200, 6], [1500000, 2900, 9]],
-    metodoPesos: "manual", pesos: [2, 3, 5], normalizacion: "minmax"
+    pesos: [0.2, 0.3, 0.5], normalizacion: "minmax"
   }
 ];
 
@@ -2228,29 +2244,28 @@ function obtenerEscenario(id) {
   return d;
 }
 
+/** Punto 7: reemplaza por completo el estado con el escenario, sin arrastrar lo anterior. */
 function cargarEscenarioPrueba() {
   const d = obtenerEscenario($("escenarioPrueba").value);
   estado.objetivo = d.objetivo;
   estado.numeroAlternativas = d.alternativas.length;
   estado.numeroCriterios = d.criterios.length;
   estado.alternativas = d.alternativas.slice();
-  estado.criterios = d.criterios.map((c) => ({ ...c }));
+  estado.criterios = d.criterios.map((c) => ({ nombre: c.nombre, sentido: c.sentido }));
+  estado.pesos = d.pesos.slice();
   estado.normalizacion = d.normalizacion;
-  estado.metodoPesos = d.metodoPesos;
-  estado.pesosManuales = d.metodoPesos === "manual" ? d.pesos.map(String) : d.criterios.map(() => "1");
   estado.matriz = d.matriz.map((fila) => fila.map(String));
   estado.configuracionConfirmada = true;
+  estado.resultados = null;
   estado.origen = { tipo: "prueba", detalle: d.nombre, modificado: false };
 
   $("objetivo").value = d.objetivo;
   $("numeroAlternativas").value = d.alternativas.length;
   $("numeroCriterios").value = d.criterios.length;
   $("metodoNormalizacion").value = d.normalizacion;
-  generarConfiguracion();
+  construirTablaCriterios();
   construirMatrizDecision();
-  construirCamposPesos();
-  $("metodoPesos").value = d.metodoPesos;
-  alternarModoPesos();
+  prepararSensibilidad();
   actualizarInsigniaOrigen();
   const ok = calcularResultados();
   if (ok) mostrarMensaje("info", "Escenario de prueba cargado", ["Datos ficticios; no provienen de expertos."]);
@@ -2271,8 +2286,7 @@ function ejecutarPruebas() {
 
   const modeloDesde = (d) => ({
     objetivo: d.objetivo, alternativas: d.alternativas.slice(), criterios: d.criterios.map((c) => ({ ...c })),
-    matriz: d.matriz.map((f) => f.slice()), normalizacion: d.normalizacion,
-    metodoPesos: d.metodoPesos, pesosManuales: d.metodoPesos === "manual" ? d.pesos.slice() : []
+    matriz: d.matriz.map((f) => f.slice()), normalizacion: d.normalizacion, pesos: d.pesos.slice()
   });
 
   // 1. Interpretación de valores numéricos
@@ -2318,19 +2332,23 @@ function ejecutarPruebas() {
 
   // 5. La alternativa igual a A+ obtiene Ci = 1
   registrar("Caso limite: una alternativa dominante obtiene Ci = 1", () => {
-    const modelo = { objetivo: "p", alternativas: ["Dominante", "Media", "Peor"], criterios: [{ nombre: "C1", tipo: "beneficio" }, { nombre: "C2", tipo: "beneficio" }], matriz: [[10, 10], [5, 5], [1, 1]], normalizacion: "vectorial", metodoPesos: "manual", pesosManuales: [1, 1] };
+    const modelo = { objetivo: "p", alternativas: ["Dominante", "Media", "Peor"], criterios: [{ nombre: "C1", sentido: "max" }, { nombre: "C2", sentido: "max" }], matriz: [[10, 10], [5, 5], [1, 1]], normalizacion: "vectorial", pesos: [0.5, 0.5] };
     const r = calcularModelo(modelo);
     afirmar(cerca(r.cercania[0], 1, 1e-9), "La alternativa que domina en todo debe dar Ci = 1");
     afirmar(cerca(r.cercania[2], 0, 1e-9), "La peor en todo debe dar Ci = 0");
     return "La dominante da 1 y la peor da 0.";
   });
 
-  // 6. Pesos por entropía suman 1 y son no negativos
-  registrar("Pesos por entropia de Shannon: suman 1 y son no negativos", () => {
-    const r = calcularModelo(modeloDesde(obtenerEscenario("grande")));
-    afirmar(cerca(sumar(r.pesos), 1, 1e-12), "Los pesos por entropia deben sumar 1");
-    afirmar(r.pesos.every((p) => p >= 0), "Ningun peso puede ser negativo");
-    return `Pesos: [${r.pesos.map((p) => formatearNumero(p)).join("; ")}].`;
+  // 6. El sentido minimizar invierte la preferencia (criterio de costo)
+  registrar("Sentido minimizar: con un criterio de costo, gana el menor valor", () => {
+    // Dos criterios con normalización vectorial; el segundo criterio no discrimina,
+    // de modo que la decisión recae en el primero según su sentido.
+    const base = { objetivo: "p", alternativas: ["Barata", "Cara"], criterios: [{ nombre: "Precio", sentido: "max" }, { nombre: "Fijo", sentido: "max" }], matriz: [[10, 5], [20, 5]], normalizacion: "vectorial", pesos: [0.5, 0.5] };
+    const rMax = calcularModelo(base);
+    afirmar(rMax.ganadora.nombre === "Cara", "Con maximizar debe ganar el valor mayor");
+    const rMin = calcularModelo({ ...base, criterios: [{ nombre: "Precio", sentido: "min" }, { nombre: "Fijo", sentido: "max" }] });
+    afirmar(rMin.ganadora.nombre === "Barata", "Con minimizar debe ganar el valor menor");
+    return "Maximizar elige el mayor; minimizar elige el menor.";
   });
 
   // 7. Los pesos manuales se normalizan a 1
@@ -2362,18 +2380,17 @@ function ejecutarPruebas() {
     let casos = 0;
     for (let m = 2; m <= 8; m++) for (let k = 2; k <= 12; k += 2) {
       const matriz = Array.from({ length: m }, () => Array.from({ length: k }, () => azar() * 100 + 1));
-      const criterios = Array.from({ length: k }, (_, j) => ({ nombre: `C${j + 1}`, tipo: azar() < 0.5 ? "beneficio" : "costo" }));
+      const criterios = Array.from({ length: k }, (_, j) => ({ nombre: `C${j + 1}`, sentido: azar() < 0.5 ? "max" : "min" }));
+      const pesos = criterios.map(() => 1 / k);
       ["vectorial", "minmax"].forEach((norm) => {
-        ["manual", "entropia"].forEach((mp) => {
-          const r = calcularModelo({ objetivo: "p", alternativas: Array.from({ length: m }, (_, i) => `A${i + 1}`), criterios, matriz, normalizacion: norm, metodoPesos: mp, pesosManuales: criterios.map(() => 1) });
-          afirmar(r.cercania.every((c) => c >= -1e-9 && c <= 1 + 1e-9), `Ci fuera de rango con m=${m}, k=${k}`);
-          afirmar(r.ranking.every((x, p) => p === 0 || r.ranking[p - 1].ci >= x.ci - 1e-12), "Ranking no descendente");
-          afirmar(r.ponderada.length === m && r.ponderada[0].length === k, "Dimensiones incorrectas");
-          casos++;
-        });
+        const r = calcularModelo({ objetivo: "p", alternativas: Array.from({ length: m }, (_, i) => `A${i + 1}`), criterios, matriz, normalizacion: norm, pesos });
+        afirmar(r.cercania.every((c) => c >= -1e-9 && c <= 1 + 1e-9), `Ci fuera de rango con m=${m}, k=${k}`);
+        afirmar(r.ranking.every((x, p) => p === 0 || r.ranking[p - 1].ci >= x.ci - 1e-12), "Ranking no descendente");
+        afirmar(r.ponderada.length === m && r.ponderada[0].length === k, "Dimensiones incorrectas");
+        casos++;
       });
     }
-    return `${casos} modelos aleatorios verificados en cuatro combinaciones de metodo.`;
+    return `${casos} modelos aleatorios verificados en dos metodos de normalizacion.`;
   });
 
   // 10. Ranking: orden, posiciones y empates
@@ -2471,23 +2488,32 @@ function ejecutarPruebas() {
   return pruebas;
 }
 
+/** Punto 3: vaciado completo, sin conservar ninguna configuración previa. */
 function limpiarAplicacion() {
-  if (!window.confirm("Esto borrará la configuración, la matriz y los resultados actuales. ¿Desea continuar?")) return;
+  if (!window.confirm("Esto borrará por completo la configuración, la matriz, los pesos y los resultados actuales. ¿Desea continuar?")) return;
   Object.assign(estado, {
     objetivo: "", numeroAlternativas: 0, numeroCriterios: 0, alternativas: [], criterios: [],
-    normalizacion: "vectorial", metodoPesos: "manual", pesosManuales: [], matriz: [],
+    pesos: [], normalizacion: "vectorial", matriz: [],
     configuracionConfirmada: false, origen: { tipo: "ninguno", detalle: "", modificado: false },
     resultados: null, resultadosDesactualizados: false, sensibilidad: null
   });
-  limpiarFormulario();
+  // Vaciar también los campos de la configuración (sin recuperar valores previos)
+  $("objetivo").value = "";
+  $("numeroAlternativas").value = "";
+  $("numeroCriterios").value = "";
+  $("metodoNormalizacion").value = "vectorial";
+  ["objetivo", "numeroAlternativas", "numeroCriterios"].forEach((id) => marcarCampoError(id, ""));
+  $("tablaCriterios").querySelector("tbody").innerHTML = "";
+  $("tablaMatrizDecision").innerHTML = "<caption id=\"captionMatriz\">Desempeño de cada alternativa</caption>";
+  $("avisoPesos").textContent = "";
   $("contenedorMatrizDecision").hidden = true; $("avisoConfiguracionDecision").hidden = false;
-  $("contenedorPesos").hidden = true; $("avisoConfiguracionPesos").hidden = false;
   $("contenidoResultados").hidden = true; $("accionesResultados").hidden = true; $("avisoSinResultados").hidden = false;
   $("contenedorSensibilidad").hidden = true; $("avisoSinSensibilidad").hidden = false;
   $("accionesExportacion").hidden = true; $("avisoSinExportacion").hidden = false;
   $("resultadoSensibilidad").innerHTML = ""; $("resultadoPruebas").innerHTML = "";
   actualizarInsigniaOrigen();
-  mostrarMensaje("info", "Aplicación reiniciada", ["Puede empezar un nuevo análisis."]);
+  window.scrollTo({ top: 0, behavior: "smooth" });
+  mostrarMensaje("info", "Aplicación reiniciada", ["Todo quedó vacío. Puede empezar un nuevo análisis desde cero."]);
 }
 
 /* =========================================================================
@@ -2553,7 +2579,6 @@ function inicializarRiel() {
     };
     marcar("configuracion", estado.configuracionConfirmada ? "listo" : "");
     marcar("decision", estado.resultados ? "listo" : (estado.configuracionConfirmada ? "alerta" : ""));
-    marcar("pesos", estado.resultados ? "listo" : "");
     marcar("resultados", estado.resultados ? (estado.resultadosDesactualizados ? "alerta" : "listo") : "");
     marcar("exportacion", estado.resultados && !estado.resultadosDesactualizados ? "listo" : "");
   };
@@ -2562,27 +2587,22 @@ function inicializarRiel() {
 }
 
 function inicializarAplicacion() {
-  // Paso 1
-  $("formConfiguracion").addEventListener("submit", (e) => { e.preventDefault(); generarConfiguracion(); });
-  $("limpiarFormulario").addEventListener("click", limpiarFormulario);
-  $("confirmarConfiguracion").addEventListener("click", confirmarConfiguracion);
+  // Paso 1: configurar (el botón es submit del formulario)
+  $("formConfiguracion").addEventListener("submit", (e) => { e.preventDefault(); confirmarConfiguracion(); });
   $("metodoNormalizacion").addEventListener("change", () => { estado.normalizacion = $("metodoNormalizacion").value; marcarResultadosDesactualizados(); });
 
-  // Paso 2
+  // Paso 2: matriz de decisión
   $("calcularResultados").addEventListener("click", calcularResultados);
   $("limpiarMatriz").addEventListener("click", vaciarMatriz);
 
-  // Paso 3
-  $("metodoPesos").addEventListener("change", () => { alternarModoPesos(); marcarResultadosDesactualizados(); });
-
-  // Paso 4
+  // Paso 3: resultados
   $("recalcularResultados").addEventListener("click", calcularResultados);
 
-  // Paso 5
+  // Paso 4: sensibilidad
   $("criterioSensibilidad").addEventListener("change", sincronizarPesoSensibilidad);
   $("ejecutarSensibilidad").addEventListener("click", ejecutarSensibilidadInterfaz);
 
-  // Paso 6
+  // Paso 5: exportación
   $("exportarExcel").addEventListener("click", exportarResultadosExcel);
   $("exportarPDF").addEventListener("click", exportarInformePDF);
 
@@ -2592,15 +2612,11 @@ function inicializarAplicacion() {
   $("ejecutarPruebas").addEventListener("click", ejecutarPruebas);
   $("limpiarAplicacion").addEventListener("click", limpiarAplicacion);
 
-  // Delegación para campos dinámicos
+  // Delegación para los campos dinámicos de la matriz (creados con innerHTML)
   document.addEventListener("input", (e) => {
     const t = e.target;
     if (t.classList.contains("celda-matriz")) { estado.matriz[Number(t.dataset.i)][Number(t.dataset.j)] = t.value; t.classList.remove("invalido"); marcarResultadosDesactualizados(); }
-    else if (t.classList.contains("campo-peso")) { estado.pesosManuales[Number(t.dataset.j)] = t.value; actualizarSumaPesos(); marcarResultadosDesactualizados(); }
-    else if (t.classList.contains("nombre-alternativa") || t.classList.contains("nombre-criterio")) marcarResultadosDesactualizados();
-  });
-  document.addEventListener("change", (e) => {
-    if (e.target.classList.contains("tipo-criterio")) marcarResultadosDesactualizados();
+    else if (t.classList.contains("nombre-alternativa")) { estado.alternativas[Number(t.dataset.i)] = t.value; marcarResultadosDesactualizados(); }
   });
   // Enter en una celda de la matriz pasa a la siguiente
   document.addEventListener("keydown", (e) => {
